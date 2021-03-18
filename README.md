@@ -2,15 +2,17 @@
 
 Takes the Java classes generated from Protobuf 3 messages and return a Map suitable for JSON serialization and use in [ProtobufJS](https://github.com/protobufjs/protobuf.js)
 
+
 ## Download
 
-Include instructions on how to integrate the library into your projects. For instance install in your build.gradle:
+Install in your build.gradle:
 
 ```
 dependencies {
-  implementation 'me.haroldmartin:protobuf_java_to_protobufjs:0.0.1'
+  implementation 'com.github.hbmartin:protobuf_java_to_protobufjs:0.0.1'
 }
 ```
+
 
 ## Usage
 
