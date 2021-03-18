@@ -2,7 +2,7 @@ name: reviewdog
 on: [push, pull_request]
 jobs:
   ktlint:
-    name: Check Code Quality
+    name: Check ktlint
     runs-on: ubuntu-latest
 
     steps:
@@ -14,4 +14,18 @@ jobs:
         uses: ScaCap/action-ktlint@master
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review # Change reporter
+          reporter: github-pr-review
+  detekt:
+    name: Check detekt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+      - name: detekt
+        uses: DominuS-RU/Detekt-Action@v1.16.0
+        with:
+          github_token: ${{ secrets.github_token }}
+          detekt_config: detekt-config.yml # Change config path
