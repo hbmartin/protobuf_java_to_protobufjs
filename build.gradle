@@ -1,0 +1,63 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.4.30'
+    ext.flipper_version = '0.76.0'
+    ext.retrofit_version = '2.9.0'
+    ext.protobuf_version = '3.11.1'
+
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+    	classpath "com.android.tools.build:gradle:4.1.2"
+    	classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.15'
+
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+plugins {
+    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.github.dcendents.android-maven' version '2.1'
+    id 'com.github.ben-manes.versions' version '0.28.0'
+    id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
+    id 'io.gitlab.arturbosch.detekt' version '1.16.0-RC2'
+}
+
+tasks.detekt.jvmTarget = "1.8"
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+    project.ext {
+        desktopIP="\"${getLocalIPv4()[0]}\""
+    }
+}
+
+def getLocalIPv4() {
+    def ip4s = []
+    NetworkInterface.getNetworkInterfaces()
+        .findAll { it.isUp() && !it.isLoopback() && !it.isVirtual() }
+        .each {
+            it.getInetAddresses()
+                .findAll { !it.isLoopbackAddress() && it instanceof Inet4Address }
+                .each { ip4s << it.getHostAddress() }
+        }
+    return ip4s
+}
+
+task addKtLintStyle(type: JavaExec, group: "formatting") {
+    description = "Adds The KtLint Style To Your IDE"
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "--android", "applyToIDEA", "-y"
+    //Point to the root directory because this task needs access to the .idea directory
+    workingDir(getRootDir())
+}

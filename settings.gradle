@@ -1,0 +1,2 @@
+include ':protobuf_java_to_protobufjs'
+include ':demo_app'

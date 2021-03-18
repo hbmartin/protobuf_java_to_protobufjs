@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Protobuf to Flipper</string>
+    <string name="make_request">Make Request</string>
+</resources>
