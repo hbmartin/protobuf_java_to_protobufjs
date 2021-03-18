@@ -8,14 +8,15 @@
 package me.haroldmartin.protobuf_java_to_protobufjs.adapter
 
 import me.haroldmartin.protobuf_java_to_protobufjs.model.ReflectedField
-import java.lang.reflect.Modifier
+import java.lang.reflect.Modifier.isPrivate
+import java.lang.reflect.Modifier.isStatic
 
 internal object GeneratedMessageToReflectedTypes {
     operator fun invoke(clazz: Class<*>): Map<Int, Class<*>> {
         val fields: MutableMap<String, ReflectedField> = mutableMapOf()
 
         for (field in clazz.declaredFields) {
-            if (Modifier.isPrivate(field.modifiers) && field.name.endsWith("_")) {
+            if (isPrivate(field.modifiers) && field.name.endsWith("_")) {
                 fields[field.name.removeSuffix("_")] = ReflectedField(
                     type = field.type
                 )
@@ -23,12 +24,10 @@ internal object GeneratedMessageToReflectedTypes {
         }
 
         for (field in clazz.declaredFields) {
-            if (Modifier.isStatic(field.modifiers)) {
-                if (field.type.isAssignableFrom(Integer.TYPE)) {
-                    val name = field.name.removeSuffix("_FIELD_NUMBER").toLowerCase()
-                    fields[name]?.let {
-                        fields[name] = it.copy(id = field.getValue())
-                    }
+            if (isStatic(field.modifiers) && field.type.isAssignableFrom(Integer.TYPE)) {
+                val name = field.name.removeSuffix("_FIELD_NUMBER").toLowerCase()
+                fields[name]?.let {
+                    fields[name] = it.copy(id = field.getValue())
                 }
             }
         }
