@@ -1,5 +1,7 @@
 # Extract ProtobufJS Messages from Generated Java Classeses
 
+![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)
+
 Takes the Java classes generated from Protobuf 3 messages and return a Map suitable for JSON serialization and use in [ProtobufJS](https://github.com/protobufjs/protobuf.js)
 
 The included demo app shows how this is used for decoding protobuf data in the Flipper network inspection tool:
