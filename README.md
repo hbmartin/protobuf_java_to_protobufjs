@@ -1,6 +1,8 @@
 # Extract ProtobufJS Messages from Generated Java Classeses
 
 ![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)
+![GitHub issues](https://img.shields.io/github/issues/hbmartin/protobuf_java_to_protobufjs)
+![GitHub top language](https://img.shields.io/github/languages/top/hbmartin/protobuf_java_to_protobufjs)
 
 Takes the Java classes generated from Protobuf 3 messages and return a Map suitable for JSON serialization and use in [ProtobufJS](https://github.com/protobufjs/protobuf.js)
 

@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="demo_android_protobuf_simple-master.app" target="1.8" />
+      <module name="demo_android_protobuf_simple-master.demo_app" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
