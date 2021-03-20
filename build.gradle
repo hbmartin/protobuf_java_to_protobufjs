@@ -25,6 +25,15 @@ plugins {
 }
 
 tasks.detekt.jvmTarget = "1.8"
+detekt {
+    buildUponDefaultConfig = true // preconfigure defaults
+    allRules = true // activate all available (even unstable) rules.
+
+    reports {
+        html.enabled = true // observe findings in your browser with structure and code snippets
+        xml.enabled = true // checkstyle like format mainly for integrations like Jenkins
+    }
+}
 
 allprojects {
     repositories {
