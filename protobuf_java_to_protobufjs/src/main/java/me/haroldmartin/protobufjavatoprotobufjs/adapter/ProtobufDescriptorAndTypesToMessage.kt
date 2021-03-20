@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.haroldmartin.protobuf_java_to_protobufjs.adapter
+package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
-import me.haroldmartin.protobuf_java_to_protobufjs.ProtobufGeneratedJavaToProtobufJs
-import me.haroldmartin.protobuf_java_to_protobufjs.model.Field
-import me.haroldmartin.protobuf_java_to_protobufjs.model.Message
-import me.haroldmartin.protobuf_java_to_protobufjs.model.RootFullNameAndMessages
+import me.haroldmartin.protobufjavatoprotobufjs.ProtobufGeneratedJavaToProtobufJs
+import me.haroldmartin.protobufjavatoprotobufjs.model.Field
+import me.haroldmartin.protobufjavatoprotobufjs.model.Message
+import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
 
-internal class ProtobufDescriptorToMessageModel(
+internal class ProtobufDescriptorAndTypesToMessage(
     private val primaryDescriptor: Descriptors.Descriptor,
     private val reflectedTypes: Map<Int, Class<*>>
 ) {
@@ -58,9 +58,6 @@ internal class ProtobufDescriptorToMessageModel(
             fieldDescriptor.hasTypeName() -> {
                 // TODO: handle enums
                 // TODO: handle repeated -> list<T>
-                println("hasTypeName :: ${fieldDescriptor.typeName} -> ${parentDescriptor.findFieldByName(fieldDescriptor.name)}")
-                println("${fieldDescriptor.number} -> ${reflectedTypes[fieldDescriptor.number]}")
-//                    queuedDescriptors.add(parentDescriptor.findFieldByName(fieldDescriptor.name))
                 reflectedTypes[fieldDescriptor.number]?.let {
                     queuedMessageClasses.add(it)
                 }

@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.haroldmartin.protobuf_java_to_protobufjs.adapter
+package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
-import me.haroldmartin.protobuf_java_to_protobufjs.model.Field
-import me.haroldmartin.protobuf_java_to_protobufjs.model.FullNamedMessages
-import me.haroldmartin.protobuf_java_to_protobufjs.model.NestedMessages
+import me.haroldmartin.protobufjavatoprotobufjs.model.Field
+import me.haroldmartin.protobufjavatoprotobufjs.model.FullNamedMessages
+import me.haroldmartin.protobufjavatoprotobufjs.model.NestedMessages
 
 object FullNamedMessagesToNestedMessages {
     operator fun invoke(messages: FullNamedMessages?): NestedMessages {

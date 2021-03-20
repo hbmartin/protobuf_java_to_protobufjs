@@ -1,17 +1,17 @@
-package me.haroldmartin.protobuf_java_to_protobufjs
+package me.haroldmartin.protobufjavatoprotobufjs
 
 import com.google.protobuf.Descriptors
 import com.google.protobuf.GeneratedMessageV3
-import me.haroldmartin.protobuf_java_to_protobufjs.adapter.GeneratedMessageToReflectedTypes
-import me.haroldmartin.protobuf_java_to_protobufjs.adapter.ProtobufDescriptorToMessageModel
-import me.haroldmartin.protobuf_java_to_protobufjs.model.RootFullNameAndMessages
+import me.haroldmartin.protobufjavatoprotobufjs.adapter.GeneratedMessageToReflectedTypes
+import me.haroldmartin.protobufjavatoprotobufjs.adapter.ProtobufDescriptorAndTypesToMessage
+import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
 
 object ProtobufGeneratedJavaToProtobufJs {
     operator fun invoke(clazz: Class<*>): RootFullNameAndMessages? {
         return if (clazz.superclass.isAssignableFrom(GeneratedMessageV3::class.java)) {
             (clazz.getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor)?.let {
                 val reflectedTypes = GeneratedMessageToReflectedTypes(clazz)
-                ProtobufDescriptorToMessageModel(it, reflectedTypes).convert()
+                ProtobufDescriptorAndTypesToMessage(it, reflectedTypes).convert()
             }
         } else {
             null

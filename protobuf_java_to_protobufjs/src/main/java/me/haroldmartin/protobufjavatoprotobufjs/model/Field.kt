@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.haroldmartin.protobuf_java_to_protobufjs.model
+package me.haroldmartin.protobufjavatoprotobufjs.model
 
 data class Field(
     val name: String,

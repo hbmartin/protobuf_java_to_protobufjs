@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.haroldmartin.protobuf_java_to_protobufjs.adapter
+package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
-import me.haroldmartin.protobuf_java_to_protobufjs.model.ReflectedField
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
 
