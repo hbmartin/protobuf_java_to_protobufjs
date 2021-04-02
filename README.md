@@ -1,9 +1,10 @@
 # Extract ProtobufJS Messages from Generated Java Classeses
 
-![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.hbmartin/protobuf_java_to_protobufjs?color=6D3DEE)](https://repo.maven.apache.org/maven2/com/github/hbmartin/protobuf_java_to_protobufjs/)
+[![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/hbmartin/protobuf_java_to_protobufjs/badge)](https://www.codefactor.io/repository/github/hbmartin/protobuf_java_to_protobufjs)
-![GitHub issues](https://img.shields.io/github/issues/hbmartin/protobuf_java_to_protobufjs)
-![GitHub top language](https://img.shields.io/github/languages/top/hbmartin/protobuf_java_to_protobufjs)
+[![GitHub issues](https://img.shields.io/github/issues/hbmartin/protobuf_java_to_protobufjs)](https://github.com/hbmartin/protobuf_java_to_protobufjs/issues)
+![GitHub top language](https://img.shields.io/github/languages/top/hbmartin/protobuf_java_to_protobufjs?color=FA8A0C)
 
 Takes the Java classes generated from Protobuf 3 messages and return a Map suitable for JSON serialization and use in [ProtobufJS](https://github.com/protobufjs/protobuf.js)
 
