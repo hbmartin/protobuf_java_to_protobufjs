@@ -7,7 +7,6 @@
 
 package me.haroldmartin.protobufdemo
 
-import com.company.generated.model.services.roomservice.GetRoomDetailsResponseModel
 import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor
 import com.facebook.flipper.plugins.retrofit2protobuf.SendProtobufToFlipperFromRetrofit
 import io.reactivex.Single
@@ -48,7 +47,4 @@ interface PersonService {
 
     @POST("person.proto")
     fun postPerson(@Body person: Dataformat.Person): Single<Dataformat.Person>
-
-    @GET("room.proto")
-    fun getRoom(): Single<GetRoomDetailsResponseModel>
 }
