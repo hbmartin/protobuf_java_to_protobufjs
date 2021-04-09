@@ -34,7 +34,7 @@ This library exposes a single call, which accept a `GeneratedMessageV3` subclass
 Also provided is a Kotlin extension method that is equivalent to the above:
 
 ```
-    Person::class.java.toMessages()
+    Person::class.toMessages()
 ```
 
 

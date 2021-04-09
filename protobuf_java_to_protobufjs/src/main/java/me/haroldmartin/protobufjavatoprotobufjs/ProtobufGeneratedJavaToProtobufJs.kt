@@ -5,6 +5,7 @@ import com.google.protobuf.GeneratedMessageV3
 import me.haroldmartin.protobufjavatoprotobufjs.adapter.GeneratedMessageToReflectedTypes
 import me.haroldmartin.protobufjavatoprotobufjs.adapter.ProtobufDescriptorAndTypesToMessage
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
+import kotlin.reflect.KClass
 
 object ProtobufGeneratedJavaToProtobufJs {
     operator fun invoke(clazz: Class<*>): RootFullNameAndMessages? {
@@ -19,5 +20,5 @@ object ProtobufGeneratedJavaToProtobufJs {
     }
 }
 
-fun <T : GeneratedMessageV3> Class<T>.toMessages(): RootFullNameAndMessages? =
-    ProtobufGeneratedJavaToProtobufJs(this)
+fun <T : GeneratedMessageV3> KClass<T>.toMessages(): RootFullNameAndMessages? =
+    ProtobufGeneratedJavaToProtobufJs(this.java)
