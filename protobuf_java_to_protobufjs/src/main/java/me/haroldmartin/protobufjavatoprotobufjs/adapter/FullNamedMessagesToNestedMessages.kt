@@ -7,7 +7,7 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
-import me.haroldmartin.protobufjavatoprotobufjs.model.Field
+import me.haroldmartin.protobufjavatoprotobufjs.model.Descriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.FullNamedMessages
 import me.haroldmartin.protobufjavatoprotobufjs.model.NestedMessages
 
@@ -27,14 +27,19 @@ object FullNamedMessagesToNestedMessages {
 
 private const val NESTED = "nested"
 
-private fun MutableMap<String, Any>.putMessage(fullName: String, fields: List<Field>) {
+private fun MutableMap<String, Any>.putMessage(fullName: String, descriptor: Descriptor) {
     val splitName = fullName.split(".")
     val innerMost = nestPackages(splitName.dropLast(1))
-    innerMost[NESTED] = mutableMapOf<String, Any>().also { nested ->
+    (innerMost[NESTED] as MutableMap<String, Any>).also { nested ->
         nested[splitName.last()] = mutableMapOf<String, Any>().also { messageMap ->
             messageMap["fields"] = mutableMapOf<String, Any>().also { fieldsMap ->
-                fields.forEach { field ->
+                descriptor.fields.forEach { field ->
                     fieldsMap[field.name] = field.propertiesMap()
+                }
+            }
+            messageMap["oneofs"] = mutableMapOf<String, Any>().also { oneOfsMap ->
+                descriptor.oneOfs.forEach { oneOf ->
+                    oneOfsMap[oneOf.key] = mapOf("oneof" to oneOf.value)
                 }
             }
         }
@@ -42,11 +47,11 @@ private fun MutableMap<String, Any>.putMessage(fullName: String, fields: List<Fi
 }
 
 private fun MutableMap<String, Any>.nestPackages(splitName: List<String>): MutableMap<String, Any> {
-    if (splitName.isEmpty()) return this
-
     if (NESTED !in this) {
         put(NESTED, mutableMapOf<String, Any>())
     }
+
+    if (splitName.isEmpty()) return this
 
     return (this[NESTED] as MutableMap<String, Any>).let { nested ->
         if (splitName[0] !in nested) {

@@ -10,8 +10,8 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
 import me.haroldmartin.protobufjavatoprotobufjs.ProtobufGeneratedJavaToProtobufJs
+import me.haroldmartin.protobufjavatoprotobufjs.model.Descriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
-import me.haroldmartin.protobufjavatoprotobufjs.model.Message
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
 
 internal class ProtobufDescriptorAndTypesToMessage(
@@ -19,7 +19,7 @@ internal class ProtobufDescriptorAndTypesToMessage(
     private val reflectedTypes: Map<Int, Class<*>>
 ) {
     private val queuedMessageClasses = mutableListOf<Class<*>>()
-    private val messages = mutableMapOf<String, Message>()
+    private val messages = mutableMapOf<String, Descriptor>()
 
     fun convert(): RootFullNameAndMessages {
         convert(primaryDescriptor)
@@ -36,8 +36,22 @@ internal class ProtobufDescriptorAndTypesToMessage(
 
     private fun convert(descriptor: Descriptors.Descriptor) {
         if (descriptor.fullName in messages) return
-        println("convert: ${descriptor.fullName}")
-        val message = descriptor.fields.map {
+
+        messages.put(
+            descriptor.fullName to Descriptor(
+                fields = getInternalFields(descriptor),
+                oneOfs = getOneOfs(descriptor)
+            )
+        )
+    }
+
+    private fun getOneOfs(descriptor: Descriptors.Descriptor): Map<String, List<String>> =
+        descriptor.realOneofs.map { oneOfDescriptor ->
+            oneOfDescriptor.name to oneOfDescriptor.fields.map { it.name }
+        }.toMap()
+
+    private fun getInternalFields(descriptor: Descriptors.Descriptor) =
+        descriptor.fields.map {
             val fieldDescriptor = it.toProto()
             Field(
                 name = fieldDescriptor.name,
@@ -47,9 +61,6 @@ internal class ProtobufDescriptorAndTypesToMessage(
             )
         }
 
-        messages.put(descriptor.fullName to message)
-    }
-
     private fun getTypeStringAndQueueUnknown(
         parentDescriptor: Descriptors.Descriptor,
         fieldDescriptor: DescriptorProtos.FieldDescriptorProto
@@ -58,6 +69,7 @@ internal class ProtobufDescriptorAndTypesToMessage(
             fieldDescriptor.hasTypeName() -> {
                 // TODO: handle enums
                 // TODO: handle repeated -> list<T>
+
                 reflectedTypes[fieldDescriptor.number]?.let {
                     queuedMessageClasses.add(it)
                 }

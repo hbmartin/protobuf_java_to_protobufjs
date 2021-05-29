@@ -9,7 +9,7 @@ package me.haroldmartin.protobufjavatoprotobufjs.model
 
 typealias Message = List<Field>
 
-typealias FullNamedMessages = Map<String, Message>
+typealias FullNamedMessages = Map<String, Descriptor>
 
 typealias NestedMessages = Map<String, Any>
 
