@@ -46,6 +46,9 @@ private fun MutableMap<String, Any>.putMessage(fullName: String, descriptor: Des
                     }
                 }
             }
+            if (descriptor.enumValues.isNotEmpty()) {
+                messageMap["values"] = descriptor.enumValues
+            }
         }
     }
 }

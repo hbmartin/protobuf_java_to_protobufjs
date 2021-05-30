@@ -5,6 +5,7 @@ import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.adapter.GeneratedMessageToReflectedTypes
 import me.haroldmartin.protobufjavatoprotobufjs.adapter.ProtobufDescriptorAndTypesToMessage
+import me.haroldmartin.protobufjavatoprotobufjs.adapter.ProtobufEnumToMessage
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
 import kotlin.reflect.KClass
 
@@ -15,6 +16,8 @@ object ProtobufGeneratedJavaToProtobufJs {
                 val reflectedTypes = GeneratedMessageToReflectedTypes(clazz)
                 ProtobufDescriptorAndTypesToMessage(it, reflectedTypes).convert()
             }
+        } else if (clazz.isMessageEnumSubclass) {
+            ProtobufEnumToMessage(clazz)
         } else {
             null
         }

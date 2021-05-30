@@ -8,6 +8,11 @@
 package me.haroldmartin.protobufjavatoprotobufjs.model
 
 data class Descriptor(
-    val fields: List<Field>,
-    val oneOfs: Map<String, List<String>>
+    val fields: Message,
+    val oneOfs: OneOfs,
+    val enumValues: EnumValues
 )
+
+typealias OneOfs = Map<String, List<String>>
+
+typealias EnumValues = Map<String, Int>

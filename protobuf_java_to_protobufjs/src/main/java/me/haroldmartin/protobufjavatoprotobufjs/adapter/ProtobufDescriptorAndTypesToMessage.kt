@@ -41,7 +41,8 @@ internal class ProtobufDescriptorAndTypesToMessage(
         messages.put(
             descriptor.fullName to Descriptor(
                 fields = getInternalFields(descriptor),
-                oneOfs = getOneOfs(descriptor)
+                oneOfs = getOneOfs(descriptor),
+                enumValues = emptyMap()
             )
         )
     }
@@ -68,7 +69,6 @@ internal class ProtobufDescriptorAndTypesToMessage(
     ): String {
         return when {
             fieldDescriptor.hasTypeName() -> {
-                // TODO: handle enums
                 // TODO: handle repeated -> list<T>
 
                 reflectedTypes[fieldDescriptor.number]?.let {
