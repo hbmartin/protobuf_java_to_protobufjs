@@ -39,7 +39,7 @@ detekt {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     project.ext {
         desktopIP="\"${getLocalIPv4()[0]}\""

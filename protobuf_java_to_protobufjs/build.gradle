@@ -4,6 +4,7 @@ plugins {
     id 'org.jlleitschuh.gradle.ktlint'
     id 'io.gitlab.arturbosch.detekt'
     id 'maven-publish'
+    id 'signing'
 }
 
 detekt {
@@ -19,17 +20,6 @@ detekt {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-publishing {
-    repositories {
-        maven {
-            credentials {
-                username 'hmartin'
-            }
-            url = 'https://s01.oss.sonatype.org/content/repositories/releases'
-        }
-    }
 }
 
 dependencies {
