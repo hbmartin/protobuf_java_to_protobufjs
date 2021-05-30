@@ -33,7 +33,7 @@ private fun MutableMap<String, Any>.putMessage(fullName: String, reflectedDescri
     val innerMost = nestPackages(splitName.dropLast(1))
     (innerMost[NESTED] as MutableMap<String, Any>).also { nested ->
         nested[splitName.last()] = mutableMapOf<String, Any>().also { messageMap ->
-            if (reflectedDescriptor.fields.isNotEmpty()) {
+            if (reflectedDescriptor.fields.isNotEmpty() || reflectedDescriptor.enumValues.isEmpty()) {
                 messageMap["fields"] = mutableMapOf<String, Any>().also { fieldsMap ->
                     reflectedDescriptor.fields.forEach { field ->
                         fieldsMap[field.name] = field.propertiesMap()
@@ -41,7 +41,7 @@ private fun MutableMap<String, Any>.putMessage(fullName: String, reflectedDescri
                 }
             }
             if (reflectedDescriptor.oneOfs.isNotEmpty()) {
-                messageMap["oneofs"] = mutableMapOf<String, Any>().also { oneOfsMap ->
+                messageMap["oneofs"] = mutableMapOf<String, Map<String, List<String>>>().also { oneOfsMap ->
                     reflectedDescriptor.oneOfs.forEach { oneOf ->
                         oneOfsMap[oneOf.key] = mapOf("oneof" to oneOf.value)
                     }

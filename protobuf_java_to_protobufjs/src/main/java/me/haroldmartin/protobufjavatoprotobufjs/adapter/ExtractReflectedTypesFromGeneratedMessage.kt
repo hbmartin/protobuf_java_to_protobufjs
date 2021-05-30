@@ -52,7 +52,7 @@ internal object ExtractReflectedTypesFromGeneratedMessage {
     ) {
         for (field in clazz.declaredFields) {
             if (isStatic(field.modifiers) && field.type.isAssignableFrom(Integer.TYPE)) {
-                val name = field.name.removeSuffix("_FIELD_NUMBER").toLowerCase()
+                val name = field.name.removeSuffix("_FIELD_NUMBER").toLowerCase().snakeToCamelCase()
                 fields.update(name) { it.copy(id = field.getValue()) }
             }
         }
@@ -133,6 +133,9 @@ private fun String.camelToSnakeCase(): String {
         "_${it.value}"
     }.toLowerCase()
 }
+
+fun String.snakeToCamelCase() =
+    split('_').joinToString("", transform = String::capitalize).decapitalize()
 
 private data class ReflectedField(
     val type: Class<*>,
