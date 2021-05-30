@@ -7,25 +7,38 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
-import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Internal
+import com.google.protobuf.ProtocolMessageEnum
+import me.haroldmartin.protobufjavatoprotobufjs.isGeneratedMessageV3Subclass
+import me.haroldmartin.protobufjavatoprotobufjs.isMessageEnumSubclass
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedTypes
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
 
 internal object GeneratedMessageToReflectedTypes {
-    operator fun invoke(clazz: Class<*>): Map<Int, Class<*>> {
+    operator fun invoke(clazz: Class<*>): ReflectedTypes {
         val fields: MutableMap<String, ReflectedField> = mutableMapOf()
 
-        addOneOfs(clazz, fields)
         addFields(clazz, fields)
+        addOneOfs(clazz, fields)
 
-        return fields.values.mapNotNull { field ->
-            field.id?.let { it to field.type }
-        }.toMap()
+        return fields.values
+            .filter { !it.type.isPrimitive }
+            .mapNotNull { field ->
+                field.id?.let { it to field.type }
+            }.toMap()
     }
 
     private fun addFields(clazz: Class<*>, fields: MutableMap<String, ReflectedField>) {
+        setFieldsFromClassPrivateFields(clazz, fields)
+        setFieldIdsFromClassFieldNumber(clazz, fields)
+    }
+
+    private fun setFieldsFromClassPrivateFields(
+        clazz: Class<*>,
+        fields: MutableMap<String, ReflectedField>
+    ) {
         for (field in clazz.declaredFields) {
             if (isPrivate(field.modifiers) && field.name.endsWith("_")) {
                 fields[field.name.removeSuffix("_")] = ReflectedField(
@@ -33,7 +46,12 @@ internal object GeneratedMessageToReflectedTypes {
                 )
             }
         }
+    }
 
+    private fun setFieldIdsFromClassFieldNumber(
+        clazz: Class<*>,
+        fields: MutableMap<String, ReflectedField>
+    ) {
         for (field in clazz.declaredFields) {
             if (isStatic(field.modifiers) && field.type.isAssignableFrom(Integer.TYPE)) {
                 val name = field.name.removeSuffix("_FIELD_NUMBER").toLowerCase()
@@ -43,24 +61,48 @@ internal object GeneratedMessageToReflectedTypes {
     }
 
     private fun addOneOfs(clazz: Class<*>, fields: MutableMap<String, ReflectedField>) {
+        setFieldsMapFromEnums(clazz, fields)
+
+        clazz.declaredClasses.filter { it.isEnum }.forEach { enumClass ->
+            ifOneOfSetId(enumClass, fields)
+            ifMessageEnumSetTypeOnExistingField(enumClass, fields)
+        }
+    }
+
+    private fun setFieldsMapFromEnums(
+        clazz: Class<*>,
+        fields: MutableMap<String, ReflectedField>
+    ) {
         clazz.declaredMethods.filter {
             it.name.startsWith("get") &&
                 !it.name.endsWith("OrBuilder") &&
                 !it.returnType.name.startsWith("com.google.protobuf") &&
                 it.returnType.name != clazz.name &&
-                !it.returnType.isEnum &&
-                it.returnType.superclass?.isAssignableFrom(GeneratedMessageV3::class.java) ?: false
+                (it.returnType.isGeneratedMessageV3Subclass || it.returnType.isMessageEnumSubclass)
         }.forEach {
             val key = it.returnType.name.split(".").last().camelToSnakeCase().toUpperCase()
             fields[key] = ReflectedField(type = it.returnType)
         }
+    }
 
-        clazz.declaredClasses.filter { it.isEnum }.forEach { enumClass ->
-            enumClass.enumConstants.filterClass(Internal.EnumLite::class.java).forEach { lite ->
-                (lite as? Enum<*>)?.run {
-                    fields.update(name) { it.copy(id = lite.number) }
-                }
+    private fun ifOneOfSetId(
+        enumClass: Class<*>,
+        fields: MutableMap<String, ReflectedField>
+    ) {
+        enumClass.enumConstants.filterClass(Internal.EnumLite::class.java).forEach { lite ->
+            (lite as? Enum<*>)?.run {
+                fields.update(name) { it.copy(id = lite.number) }
             }
+        }
+    }
+
+    private fun ifMessageEnumSetTypeOnExistingField(
+        enumClass: Class<*>,
+        fields: MutableMap<String, ReflectedField>
+    ) {
+        if (ProtocolMessageEnum::class.java.isAssignableFrom(enumClass)) {
+            val key = enumClass.simpleName.toLowerCase()
+            fields.update(key) { it.copy(type = enumClass) }
         }
     }
 }
@@ -71,7 +113,7 @@ private fun <K, V> MutableMap<K, V>.update(name: K, recipe: (V) -> V) {
     }
 }
 
-private fun <T, FILTER> Array<T>.filterClass(clazz: Class<FILTER>): List<FILTER> =
+private inline fun <T, reified FILTER> Array<T>.filterClass(clazz: Class<FILTER>): List<FILTER> =
     map { it as? FILTER }.filterNotNull()
 
 private fun java.lang.reflect.Field.getValue(): Int {

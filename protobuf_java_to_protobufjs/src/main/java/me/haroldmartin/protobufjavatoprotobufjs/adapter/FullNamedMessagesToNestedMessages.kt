@@ -32,14 +32,18 @@ private fun MutableMap<String, Any>.putMessage(fullName: String, descriptor: Des
     val innerMost = nestPackages(splitName.dropLast(1))
     (innerMost[NESTED] as MutableMap<String, Any>).also { nested ->
         nested[splitName.last()] = mutableMapOf<String, Any>().also { messageMap ->
-            messageMap["fields"] = mutableMapOf<String, Any>().also { fieldsMap ->
-                descriptor.fields.forEach { field ->
-                    fieldsMap[field.name] = field.propertiesMap()
+            if (descriptor.fields.isNotEmpty()) {
+                messageMap["fields"] = mutableMapOf<String, Any>().also { fieldsMap ->
+                    descriptor.fields.forEach { field ->
+                        fieldsMap[field.name] = field.propertiesMap()
+                    }
                 }
             }
-            messageMap["oneofs"] = mutableMapOf<String, Any>().also { oneOfsMap ->
-                descriptor.oneOfs.forEach { oneOf ->
-                    oneOfsMap[oneOf.key] = mapOf("oneof" to oneOf.value)
+            if (descriptor.oneOfs.isNotEmpty()) {
+                messageMap["oneofs"] = mutableMapOf<String, Any>().also { oneOfsMap ->
+                    descriptor.oneOfs.forEach { oneOf ->
+                        oneOfsMap[oneOf.key] = mapOf("oneof" to oneOf.value)
+                    }
                 }
             }
         }

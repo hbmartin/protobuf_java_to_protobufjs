@@ -12,11 +12,12 @@ import com.google.protobuf.Descriptors
 import me.haroldmartin.protobufjavatoprotobufjs.ProtobufGeneratedJavaToProtobufJs
 import me.haroldmartin.protobufjavatoprotobufjs.model.Descriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedTypes
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
 
 internal class ProtobufDescriptorAndTypesToMessage(
     private val primaryDescriptor: Descriptors.Descriptor,
-    private val reflectedTypes: Map<Int, Class<*>>
+    private val reflectedTypes: ReflectedTypes
 ) {
     private val queuedMessageClasses = mutableListOf<Class<*>>()
     private val messages = mutableMapOf<String, Descriptor>()

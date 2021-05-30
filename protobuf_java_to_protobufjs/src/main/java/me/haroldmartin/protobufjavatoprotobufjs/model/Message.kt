@@ -13,6 +13,8 @@ typealias FullNamedMessages = Map<String, Descriptor>
 
 typealias NestedMessages = Map<String, Any>
 
+typealias ReflectedTypes = Map<Int, Class<*>>
+
 data class RootFullNameAndMessages(
     val rootFullName: String,
     val messages: FullNamedMessages
