@@ -7,14 +7,21 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.model
 
-data class ReflectedDescriptor(
+internal data class ReflectedDescriptor(
     val fields: TypeFields,
     val oneOfs: OneOfs,
     val enumValues: EnumValues
 )
 
-typealias TypeFields = List<Field>
+internal typealias TypeFields = List<Field>
 
-typealias OneOfs = Map<String, List<String>>
+internal typealias OneOfs = Map<String, List<String>>
 
-typealias EnumValues = Map<String, Int>
+internal typealias EnumValues = Map<String, Int>
+
+internal typealias NamedDescriptorMap = Map<String, ReflectedDescriptor>
+
+internal data class RootFullNameAndDescriptors(
+    val rootFullName: String,
+    val descriptorMap: NamedDescriptorMap
+)

@@ -12,7 +12,7 @@ import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
 
 typealias JsDescriptors = Map<String, Any>
 
-object DescriptorMapToJs {
+internal object DescriptorMapToJs {
     operator fun invoke(descriptorMap: NamedDescriptorMap?): JsDescriptors {
         if (descriptorMap == null) return mutableMapOf()
 

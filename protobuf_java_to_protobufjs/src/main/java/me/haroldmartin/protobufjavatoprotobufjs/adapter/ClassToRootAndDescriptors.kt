@@ -11,7 +11,7 @@ import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
 
-object ClassToRootAndDescriptors {
+internal object ClassToRootAndDescriptors {
     operator fun invoke(clazz: Class<*>): RootFullNameAndDescriptors? {
         return when {
             clazz.isGeneratedMessageV3Subclass -> ProtobufGeneratedMessageToDescriptors(clazz)

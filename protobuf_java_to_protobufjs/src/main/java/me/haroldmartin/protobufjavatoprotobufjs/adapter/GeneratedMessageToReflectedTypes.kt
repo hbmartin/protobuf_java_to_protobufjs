@@ -9,7 +9,6 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.Internal
 import com.google.protobuf.ProtocolMessageEnum
-import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
 
@@ -134,3 +133,8 @@ private fun String.camelToSnakeCase(): String {
         "_${it.value}"
     }.toLowerCase()
 }
+
+private data class ReflectedField(
+    val type: Class<*>,
+    val id: Int? = null
+)

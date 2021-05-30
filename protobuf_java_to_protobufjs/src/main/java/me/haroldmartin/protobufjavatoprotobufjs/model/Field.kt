@@ -7,7 +7,7 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.model
 
-data class Field(
+internal data class Field(
     val name: String,
     val type: String,
     val id: Int,
