@@ -9,17 +9,17 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.Descriptors
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
-import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
+import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
 
-object ProtobufEnumToMessage {
-    operator fun invoke(clazz: Class<*>): RootFullNameAndMessages? {
+internal object ProtobufEnumToDescriptors {
+    operator fun invoke(clazz: Class<*>): RootFullNameAndDescriptors? {
         return (clazz.getMethod("getDescriptor").invoke(null) as? Descriptors.EnumDescriptor)?.let { enumDescriptor ->
             val descriptor = ReflectedDescriptor(
                 fields = emptyList(),
                 oneOfs = emptyMap(),
                 enumValues = enumDescriptor.values.map { it.name to it.index }.toMap()
             )
-            RootFullNameAndMessages(
+            RootFullNameAndDescriptors(
                 rootFullName = enumDescriptor.fullName,
                 descriptorMap = mapOf(enumDescriptor.fullName to descriptor)
             )

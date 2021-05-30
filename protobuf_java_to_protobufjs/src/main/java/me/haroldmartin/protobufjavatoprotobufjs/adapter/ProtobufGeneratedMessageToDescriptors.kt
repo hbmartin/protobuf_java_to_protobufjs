@@ -9,26 +9,25 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
-import me.haroldmartin.protobufjavatoprotobufjs.ProtobufGeneratedJavaToProtobufJs
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
-import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
+import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
 
-internal class ProtobufDescriptorAndTypesToMessage(
+internal class ProtobufGeneratedMessageToDescriptors(
     private val primaryDescriptor: Descriptors.Descriptor,
     private val reflectedTypes: ReflectedTypes
 ) {
     private val queuedMessageClasses = mutableListOf<Class<*>>()
     private val messages = mutableMapOf<String, ReflectedDescriptor>()
 
-    fun convert(): RootFullNameAndMessages {
+    fun convert(): RootFullNameAndDescriptors {
         convert(primaryDescriptor)
         while (queuedMessageClasses.size > 0) {
-            ProtobufGeneratedJavaToProtobufJs(queuedMessageClasses.removeAt(0))?.descriptorMap?.let {
+            ClassToRootAndDescriptors(queuedMessageClasses.removeAt(0))?.descriptorMap?.let {
                 messages.putAll(it)
             }
         }
-        return RootFullNameAndMessages(
+        return RootFullNameAndDescriptors(
             rootFullName = primaryDescriptor.fullName,
             descriptorMap = messages
         )
@@ -78,6 +77,15 @@ internal class ProtobufDescriptorAndTypesToMessage(
             // TODO: handle groups
             else -> {
                 fieldDescriptor.type.jsString
+            }
+        }
+    }
+
+    companion object {
+        operator fun invoke(clazz: Class<*>): RootFullNameAndDescriptors? {
+            return (clazz.getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor)?.let {
+                val reflectedTypes = GeneratedMessageToReflectedTypes(clazz)
+                ProtobufGeneratedMessageToDescriptors(it, reflectedTypes).convert()
             }
         }
     }

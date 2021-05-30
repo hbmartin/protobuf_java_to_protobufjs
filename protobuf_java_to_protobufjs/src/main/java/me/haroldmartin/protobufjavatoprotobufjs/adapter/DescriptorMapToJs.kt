@@ -10,10 +10,10 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 import me.haroldmartin.protobufjavatoprotobufjs.model.NamedDescriptorMap
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
 
-typealias JsDescriptor = Map<String, Any>
+typealias JsDescriptors = Map<String, Any>
 
-object FullNamedMessagesToNestedMessages {
-    operator fun invoke(descriptorMap: NamedDescriptorMap?): JsDescriptor {
+object DescriptorMapToJs {
+    operator fun invoke(descriptorMap: NamedDescriptorMap?): JsDescriptors {
         if (descriptorMap == null) return mutableMapOf()
 
         val nestedDefinitions = mutableMapOf<String, Any>()

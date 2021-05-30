@@ -9,7 +9,7 @@ package me.haroldmartin.protobufjavatoprotobufjs.model
 
 typealias NamedDescriptorMap = Map<String, ReflectedDescriptor>
 
-data class RootFullNameAndMessages(
+data class RootFullNameAndDescriptors(
     val rootFullName: String,
     val descriptorMap: NamedDescriptorMap
 )

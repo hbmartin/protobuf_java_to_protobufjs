@@ -9,8 +9,6 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.Internal
 import com.google.protobuf.ProtocolMessageEnum
-import me.haroldmartin.protobufjavatoprotobufjs.isGeneratedMessageV3Subclass
-import me.haroldmartin.protobufjavatoprotobufjs.isMessageEnumSubclass
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
