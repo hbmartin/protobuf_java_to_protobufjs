@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.hbmartin/protobuf_java_to_protobufjs?color=6D3DEE)](https://repo.maven.apache.org/maven2/com/github/hbmartin/protobuf_java_to_protobufjs/)
 [![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/hbmartin/protobuf_java_to_protobufjs/badge)](https://www.codefactor.io/repository/github/hbmartin/protobuf_java_to_protobufjs)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=hbmartin_protobuf_java_to_protobufjs&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=hbmartin_protobuf_java_to_protobufjs)
 [![GitHub issues](https://img.shields.io/github/issues/hbmartin/protobuf_java_to_protobufjs)](https://github.com/hbmartin/protobuf_java_to_protobufjs/issues)
 ![GitHub top language](https://img.shields.io/github/languages/top/hbmartin/protobuf_java_to_protobufjs?color=FA8A0C)
 
@@ -18,14 +19,14 @@ Install in your build.gradle:
 
 ```
 dependencies {
-  implementation 'com.github.hbmartin:protobuf_java_to_protobufjs:0.0.1'
+  implementation 'com.github.hbmartin:protobuf_java_to_protobufjs:0.1.0'
 }
 ```
 
 
 ## Usage
 
-This library exposes a single call, which accept a `GeneratedMessageV3` subclass and returns a nested Map:
+This library exposes a single call, which accept a `GeneratedMessageV3` subclass and returns an object with a `rootFullName` property describing the protobuf path of the class and a `descriptors` property containing a nested map suitable for serializing to JSON and using in ProtobufJS:
 
 ```
     ProtobufGeneratedJavaToProtobufJs(Person::class.java)
