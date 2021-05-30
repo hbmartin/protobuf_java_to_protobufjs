@@ -14,7 +14,7 @@ import java.lang.reflect.Modifier.isStatic
 
 typealias ReflectedTypes = Map<Int, Class<*>>
 
-internal object GeneratedMessageToReflectedTypes {
+internal object ExtractReflectedTypesFromGeneratedMessage {
     operator fun invoke(clazz: Class<*>): ReflectedTypes {
         val fields: MutableMap<String, ReflectedField> = mutableMapOf()
 

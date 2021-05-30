@@ -84,7 +84,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
     companion object {
         operator fun invoke(clazz: Class<*>): RootFullNameAndDescriptors? {
             return (clazz.getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor)?.let {
-                val reflectedTypes = GeneratedMessageToReflectedTypes(clazz)
+                val reflectedTypes = ExtractReflectedTypesFromGeneratedMessage(clazz)
                 ProtobufGeneratedMessageToDescriptors(it, reflectedTypes).convert()
             }
         }
