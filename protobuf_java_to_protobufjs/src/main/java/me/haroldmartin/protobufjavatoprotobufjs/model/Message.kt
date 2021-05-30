@@ -7,15 +7,9 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.model
 
-typealias Message = List<Field>
-
-typealias FullNamedMessages = Map<String, Descriptor>
-
-typealias NestedMessages = Map<String, Any>
-
-typealias ReflectedTypes = Map<Int, Class<*>>
+typealias NamedDescriptorMap = Map<String, ReflectedDescriptor>
 
 data class RootFullNameAndMessages(
     val rootFullName: String,
-    val messages: FullNamedMessages
+    val descriptorMap: NamedDescriptorMap
 )

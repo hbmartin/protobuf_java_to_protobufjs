@@ -10,9 +10,8 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
 import me.haroldmartin.protobufjavatoprotobufjs.ProtobufGeneratedJavaToProtobufJs
-import me.haroldmartin.protobufjavatoprotobufjs.model.Descriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
-import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedTypes
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndMessages
 
 internal class ProtobufDescriptorAndTypesToMessage(
@@ -20,18 +19,18 @@ internal class ProtobufDescriptorAndTypesToMessage(
     private val reflectedTypes: ReflectedTypes
 ) {
     private val queuedMessageClasses = mutableListOf<Class<*>>()
-    private val messages = mutableMapOf<String, Descriptor>()
+    private val messages = mutableMapOf<String, ReflectedDescriptor>()
 
     fun convert(): RootFullNameAndMessages {
         convert(primaryDescriptor)
         while (queuedMessageClasses.size > 0) {
-            ProtobufGeneratedJavaToProtobufJs(queuedMessageClasses.removeAt(0))?.messages?.let {
+            ProtobufGeneratedJavaToProtobufJs(queuedMessageClasses.removeAt(0))?.descriptorMap?.let {
                 messages.putAll(it)
             }
         }
         return RootFullNameAndMessages(
             rootFullName = primaryDescriptor.fullName,
-            messages = messages
+            descriptorMap = messages
         )
     }
 
@@ -39,7 +38,7 @@ internal class ProtobufDescriptorAndTypesToMessage(
         if (descriptor.fullName in messages) return
 
         messages.put(
-            descriptor.fullName to Descriptor(
+            descriptor.fullName to ReflectedDescriptor(
                 fields = getInternalFields(descriptor),
                 oneOfs = getOneOfs(descriptor),
                 enumValues = emptyMap()

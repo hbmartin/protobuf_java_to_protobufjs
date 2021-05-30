@@ -7,17 +7,18 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
-import me.haroldmartin.protobufjavatoprotobufjs.model.Descriptor
-import me.haroldmartin.protobufjavatoprotobufjs.model.FullNamedMessages
-import me.haroldmartin.protobufjavatoprotobufjs.model.NestedMessages
+import me.haroldmartin.protobufjavatoprotobufjs.model.NamedDescriptorMap
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
+
+typealias JsDescriptor = Map<String, Any>
 
 object FullNamedMessagesToNestedMessages {
-    operator fun invoke(messages: FullNamedMessages?): NestedMessages {
-        if (messages == null) return mutableMapOf()
+    operator fun invoke(descriptorMap: NamedDescriptorMap?): JsDescriptor {
+        if (descriptorMap == null) return mutableMapOf()
 
         val nestedDefinitions = mutableMapOf<String, Any>()
 
-        for ((fullName, fields) in messages.entries) {
+        for ((fullName, fields) in descriptorMap.entries) {
             nestedDefinitions.putMessage(fullName, fields)
         }
 
@@ -27,27 +28,27 @@ object FullNamedMessagesToNestedMessages {
 
 private const val NESTED = "nested"
 
-private fun MutableMap<String, Any>.putMessage(fullName: String, descriptor: Descriptor) {
+private fun MutableMap<String, Any>.putMessage(fullName: String, reflectedDescriptor: ReflectedDescriptor) {
     val splitName = fullName.split(".")
     val innerMost = nestPackages(splitName.dropLast(1))
     (innerMost[NESTED] as MutableMap<String, Any>).also { nested ->
         nested[splitName.last()] = mutableMapOf<String, Any>().also { messageMap ->
-            if (descriptor.fields.isNotEmpty()) {
+            if (reflectedDescriptor.fields.isNotEmpty()) {
                 messageMap["fields"] = mutableMapOf<String, Any>().also { fieldsMap ->
-                    descriptor.fields.forEach { field ->
+                    reflectedDescriptor.fields.forEach { field ->
                         fieldsMap[field.name] = field.propertiesMap()
                     }
                 }
             }
-            if (descriptor.oneOfs.isNotEmpty()) {
+            if (reflectedDescriptor.oneOfs.isNotEmpty()) {
                 messageMap["oneofs"] = mutableMapOf<String, Any>().also { oneOfsMap ->
-                    descriptor.oneOfs.forEach { oneOf ->
+                    reflectedDescriptor.oneOfs.forEach { oneOf ->
                         oneOfsMap[oneOf.key] = mapOf("oneof" to oneOf.value)
                     }
                 }
             }
-            if (descriptor.enumValues.isNotEmpty()) {
-                messageMap["values"] = descriptor.enumValues
+            if (reflectedDescriptor.enumValues.isNotEmpty()) {
+                messageMap["values"] = reflectedDescriptor.enumValues
             }
         }
     }

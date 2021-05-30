@@ -7,11 +7,13 @@
 
 package me.haroldmartin.protobufjavatoprotobufjs.model
 
-data class Descriptor(
-    val fields: Message,
+data class ReflectedDescriptor(
+    val fields: TypeFields,
     val oneOfs: OneOfs,
     val enumValues: EnumValues
 )
+
+typealias TypeFields = List<Field>
 
 typealias OneOfs = Map<String, List<String>>
 

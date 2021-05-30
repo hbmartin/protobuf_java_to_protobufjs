@@ -12,9 +12,10 @@ import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.isGeneratedMessageV3Subclass
 import me.haroldmartin.protobufjavatoprotobufjs.isMessageEnumSubclass
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
-import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedTypes
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
+
+typealias ReflectedTypes = Map<Int, Class<*>>
 
 internal object GeneratedMessageToReflectedTypes {
     operator fun invoke(clazz: Class<*>): ReflectedTypes {
