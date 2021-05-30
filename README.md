@@ -38,6 +38,24 @@ Also provided is a Kotlin extension method that is equivalent to the above:
     Person::class.toJsDescriptors()
 ```
 
+### Flipper
+
+To add automated network inspection of protobuf payloads to Flipper, use the plugin:
+
+```groovy
+dependencies {
+  debugImplementation 'com.facebook.flipper:flipper-retrofit2-protobuf-plugin:latest-version'
+}
+```
+
+Then call `SendProtobufToFlipperFromRetrofit` for each service class.
+
+```kotlin
+import com.facebook.flipper.plugins.retrofit2protobuf.SendProtobufToFlipperFromRetrofit
+
+SendProtobufToFlipperFromRetrofit("https://baseurl.com/", MyApiService::class.java)
+```
+
 
 ## License
 
