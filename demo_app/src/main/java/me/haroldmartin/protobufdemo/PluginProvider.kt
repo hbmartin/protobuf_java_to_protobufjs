@@ -7,10 +7,10 @@
 
 package me.haroldmartin.protobufdemo
 
-import com.facebook.flipper.plugins.network.NetworkFlipperPlugin2
+import com.facebook.flipper.plugins.network.NetworkFlipperPlugin
 
 object PluginProvider {
-    val networkFlipperPlugin = NetworkFlipperPlugin2()
+    val networkFlipperPlugin = NetworkFlipperPlugin()
 
     val all = listOf(networkFlipperPlugin)
 }
