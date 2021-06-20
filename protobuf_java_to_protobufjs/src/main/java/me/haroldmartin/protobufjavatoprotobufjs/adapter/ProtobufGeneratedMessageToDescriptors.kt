@@ -9,6 +9,7 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
+import com.google.protobuf.MapField
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
@@ -94,6 +95,12 @@ internal class ProtobufGeneratedMessageToDescriptors(
 private fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) {
     put(pair.first, pair.second)
 }
+
+private val Class<*>.descriptors: Descriptors.Descriptor?
+    get() = getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor
+
+private val Class<*>.isMapType: Boolean
+    get() = MapType::class.java.isAssignableFrom(this)
 
 private val DescriptorProtos.FieldDescriptorProto.Type.jsString: String
     get() = toString().removePrefix("TYPE_").toLowerCase()

@@ -11,13 +11,15 @@ internal data class Field(
     val name: String,
     val type: String,
     val id: Int,
-    val label: String
+    val label: String,
+    val keyType: String? = null
 ) {
     fun propertiesMap(): Map<String, Any> {
         return mutableMapOf<String, Any>().apply {
             put("type", type)
             put("id", id)
             put("rule", label)
+            keyType?.let { put("keyType", it) }
         }
     }
 }

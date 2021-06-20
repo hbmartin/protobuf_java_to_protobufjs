@@ -17,17 +17,10 @@ internal object ClassToRootAndDescriptors {
         return when {
             clazz.isGeneratedMessageV3Subclass -> ProtobufGeneratedMessageToDescriptors(clazz)
             clazz.isMessageEnumSubclass -> ProtobufEnumToDescriptors(clazz)
-            clazz.isMapField -> {
-                println(clazz)
-                ProtobufMapFieldToDescriptors(clazz)
-            }
             else -> null
         }
     }
 }
-
-private val Class<*>.isMapField: Boolean
-    get() = MapField::class.java.isAssignableFrom(this)
 
 internal val Class<*>.isGeneratedMessageV3Subclass: Boolean
     get() = GeneratedMessageV3::class.java.isAssignableFrom(this)

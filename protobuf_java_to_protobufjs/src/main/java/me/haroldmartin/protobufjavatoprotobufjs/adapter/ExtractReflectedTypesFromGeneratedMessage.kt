@@ -8,9 +8,11 @@
 package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.Internal
+import com.google.protobuf.MapField
 import com.google.protobuf.ProtocolMessageEnum
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
+import java.lang.reflect.ParameterizedType
 
 typealias ReflectedTypes = Map<Int, Class<*>>
 
@@ -39,9 +41,22 @@ internal object ExtractReflectedTypesFromGeneratedMessage {
     ) {
         for (field in clazz.declaredFields) {
             if (isPrivate(field.modifiers) && field.name.endsWith("_")) {
-                fields[field.name.removeSuffix("_")] = ReflectedField(
-                    type = field.type
-                )
+                if (field.type.isMapField) {
+                    val parameterizedType = field.genericType as ParameterizedType
+                    (parameterizedType.actualTypeArguments[1] as? Class<*>)?.let { valueType ->
+                        val keyType = parameterizedType.actualTypeArguments[0] as Class<*>
+                        val mapClazz = MapType(keyType, valueType)
+
+                        fields[field.name.removeSuffix("_")] = ReflectedField(
+                            type = mapClazz::class.java,
+                        )
+                        println(fields)
+                    }
+                } else {
+                    fields[field.name.removeSuffix("_")] = ReflectedField(
+                        type = field.type,
+                    )
+                }
             }
         }
     }
@@ -126,6 +141,9 @@ private fun java.lang.reflect.Field.getValue(): Int {
     }
 }
 
+private val Class<*>.isMapField: Boolean
+    get() = MapField::class.java.isAssignableFrom(this)
+
 private val camelRegex = "(?<=[a-zA-Z])[A-Z]".toRegex()
 
 private fun String.camelToSnakeCase(): String {
@@ -141,3 +159,5 @@ private data class ReflectedField(
     val type: Class<*>,
     val id: Int? = null
 )
+
+class MapType<K, V>(val keyClass: Class<K>, val MapClass:  Class<V>)
