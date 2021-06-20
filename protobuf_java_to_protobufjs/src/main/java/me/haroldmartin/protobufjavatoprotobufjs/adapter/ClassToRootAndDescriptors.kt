@@ -8,7 +8,6 @@
 package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.GeneratedMessageV3
-import com.google.protobuf.MapField
 import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
 
@@ -27,3 +26,6 @@ internal val Class<*>.isGeneratedMessageV3Subclass: Boolean
 
 internal val Class<*>.isMessageEnumSubclass: Boolean
     get() = ProtocolMessageEnum::class.java.isAssignableFrom(this)
+
+internal val Class<*>.isDescriptable: Boolean
+    get() = isGeneratedMessageV3Subclass || isMessageEnumSubclass

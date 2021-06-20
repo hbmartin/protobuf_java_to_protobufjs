@@ -9,10 +9,14 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
-import com.google.protobuf.MapField
+import com.google.protobuf.GeneratedMessageV3
+import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
+import java.lang.RuntimeException
 
 internal class ProtobufGeneratedMessageToDescriptors(
     private val primaryDescriptor: Descriptors.Descriptor,
@@ -51,27 +55,41 @@ internal class ProtobufGeneratedMessageToDescriptors(
             oneOfDescriptor.name to oneOfDescriptor.fields.map { it.name }
         }.toMap()
 
-    private fun getInternalFields(descriptor: Descriptors.Descriptor) =
-        descriptor.fields.map {
+    private fun getInternalFields(descriptor: Descriptors.Descriptor): List<Field> {
+        return descriptor.fields.map {
             val fieldDescriptor = it.toProto()
+
+            reflectedFieldsList.findId(fieldDescriptor.number)?.let { reflected ->
+                reflected.keyClass?.let { keyClass ->
+                    val field = Field(
+                        name = fieldDescriptor.name,
+                        type = getTypeStringFromValueClass(reflected.type) ?: throw(RuntimeException("Unknown map value class type")),
+                        id = fieldDescriptor.number,
+                        label = fieldDescriptor.label.jsString,
+                        keyType = keyClass.getScalarType()
+                    )
+                    println(field)
+                    return@map field
+                }
+            }
+
             Field(
                 name = fieldDescriptor.name,
-                type = getTypeStringAndQueueUnknown(descriptor, fieldDescriptor),
+                type = getTypeStringAndQueueUnknown(fieldDescriptor),
                 id = fieldDescriptor.number,
-                label = fieldDescriptor.label.jsString
+                label = fieldDescriptor.label.jsString,
             )
         }
+    }
 
     private fun getTypeStringAndQueueUnknown(
-        parentDescriptor: Descriptors.Descriptor,
         fieldDescriptor: DescriptorProtos.FieldDescriptorProto
     ): String {
         return when {
             fieldDescriptor.hasTypeName() -> {
                 // TODO: handle repeated -> list<T>
-
-                reflectedTypes[fieldDescriptor.number]?.let {
-                    queuedMessageClasses.add(it)
+                reflectedFieldsList.findId(fieldDescriptor.number)?.let {
+                    queuedMessageClasses.add(it.type)
                 }
                 fieldDescriptor.typeName
             }
@@ -79,6 +97,22 @@ internal class ProtobufGeneratedMessageToDescriptors(
             else -> {
                 fieldDescriptor.type.jsString
             }
+        }
+    }
+
+    private fun getTypeStringFromValueClass(clazz: Class<*>): String? {
+        println("$clazz -> ${clazz.getScalarType()}")
+        return if (clazz.isDescriptable) {
+            queuedMessageClasses.add(clazz)
+            if (clazz.isMessageEnumSubclass) {
+                (clazz as? ProtocolMessageEnum)?.descriptorForType?.fullName
+            } else if (clazz.isGeneratedMessageV3Subclass) {
+                (clazz as? GeneratedMessageV3)?.descriptorForType?.fullName
+            } else {
+                null
+            }
+        } else {
+            clazz.getScalarType()
         }
     }
 
@@ -102,11 +136,19 @@ private fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) {
     put(pair.first, pair.second)
 }
 
+private fun Class<*>.getScalarType() : String? =
+    when {
+        String::class.java.isAssignableFrom(this) -> "string"
+        Double::class.java.isAssignableFrom(this) -> "double"
+        Float::class.java.isAssignableFrom(this) -> "float"
+        Int::class.java.isAssignableFrom(this) -> "int32"
+        Long::class.java.isAssignableFrom(this) -> "int64"
+        Boolean::class.java.isAssignableFrom(this) -> "bool"
+        else -> null
+    }
+
 private val Class<*>.descriptors: Descriptors.Descriptor?
     get() = getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor
-
-private val Class<*>.isMapType: Boolean
-    get() = MapType::class.java.isAssignableFrom(this)
 
 private val DescriptorProtos.FieldDescriptorProto.Type.jsString: String
     get() = toString().removePrefix("TYPE_").toLowerCase()
