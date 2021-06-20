@@ -10,11 +10,11 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 import com.google.protobuf.Internal
 import com.google.protobuf.MapField
 import com.google.protobuf.ProtocolMessageEnum
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
 import java.lang.reflect.ParameterizedType
-import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
-import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
 
 internal object ExtractReflectedTypesFromGeneratedMessage {
     operator fun invoke(clazz: Class<*>): ReflectedFieldsList {

@@ -136,7 +136,7 @@ private fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) {
     put(pair.first, pair.second)
 }
 
-private fun Class<*>.getScalarType() : String? =
+private fun Class<*>.getScalarType(): String? =
     when {
         String::class.java.isAssignableFrom(this) -> "string"
         Double::class.java.isAssignableFrom(this) -> "double"

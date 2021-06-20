@@ -18,7 +18,7 @@ internal data class Field(
         return mutableMapOf<String, Any>().apply {
             put("type", type)
             put("id", id)
-            keyType?.let{
+            keyType?.let {
                 put("keyType", it)
             }
             if (keyType == null) {

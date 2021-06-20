@@ -1,4 +1,4 @@
-# Extract ProtobufJS Messages from Generated Java Classeses
+# Extract ProtobufJS Messages from Generated Java Classes
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.hbmartin/protobuf_java_to_protobufjs?color=6D3DEE)](https://repo.maven.apache.org/maven2/com/github/hbmartin/protobuf_java_to_protobufjs/)
 [![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml)
