@@ -13,21 +13,18 @@ import com.google.protobuf.ProtocolMessageEnum
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
 import java.lang.reflect.ParameterizedType
-
-typealias ReflectedTypes = Map<Int, Class<*>>
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
+import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
 
 internal object ExtractReflectedTypesFromGeneratedMessage {
-    operator fun invoke(clazz: Class<*>): ReflectedTypes {
+    operator fun invoke(clazz: Class<*>): ReflectedFieldsList {
         val fields: MutableMap<String, ReflectedField> = mutableMapOf()
 
         addFields(clazz, fields)
         addOneOfs(clazz, fields)
 
         return fields.values
-            .filter { !it.type.isPrimitive }
-            .mapNotNull { field ->
-                field.id?.let { it to field.type }
-            }.toMap()
+            .filter { (!it.type.isPrimitive || it.keyClass != null) && it.id != null }
     }
 
     private fun addFields(clazz: Class<*>, fields: MutableMap<String, ReflectedField>) {
@@ -43,14 +40,11 @@ internal object ExtractReflectedTypesFromGeneratedMessage {
             if (isPrivate(field.modifiers) && field.name.endsWith("_")) {
                 if (field.type.isMapField) {
                     val parameterizedType = field.genericType as ParameterizedType
-                    (parameterizedType.actualTypeArguments[1] as? Class<*>)?.let { valueType ->
-                        val keyType = parameterizedType.actualTypeArguments[0] as Class<*>
-                        val mapClazz = MapType(keyType, valueType)
-
+                    (parameterizedType.actualTypeArguments[1] as? Class<*>)?.let { valueClass ->
                         fields[field.name.removeSuffix("_")] = ReflectedField(
-                            type = mapClazz::class.java,
+                            keyClass = parameterizedType.actualTypeArguments[0] as Class<*>,
+                            type = valueClass
                         )
-                        println(fields)
                     }
                 } else {
                     fields[field.name.removeSuffix("_")] = ReflectedField(
@@ -152,12 +146,5 @@ private fun String.camelToSnakeCase(): String {
     }.toLowerCase()
 }
 
-fun String.snakeToCamelCase() =
+private fun String.snakeToCamelCase() =
     split('_').joinToString("", transform = String::capitalize).decapitalize()
-
-private data class ReflectedField(
-    val type: Class<*>,
-    val id: Int? = null
-)
-
-class MapType<K, V>(val keyClass: Class<K>, val MapClass:  Class<V>)

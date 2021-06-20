@@ -16,7 +16,7 @@ import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
 
 internal class ProtobufGeneratedMessageToDescriptors(
     private val primaryDescriptor: Descriptors.Descriptor,
-    private val reflectedTypes: ReflectedTypes
+    private val reflectedFieldsList: ReflectedFieldsList
 ) {
     private val queuedMessageClasses = mutableListOf<Class<*>>()
     private val messages = mutableMapOf<String, ReflectedDescriptor>()
@@ -84,13 +84,19 @@ internal class ProtobufGeneratedMessageToDescriptors(
 
     companion object {
         operator fun invoke(clazz: Class<*>): RootFullNameAndDescriptors? {
-            return (clazz.getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor)?.let {
+            return clazz.descriptors?.let { descriptor ->
                 val reflectedTypes = ExtractReflectedTypesFromGeneratedMessage(clazz)
-                ProtobufGeneratedMessageToDescriptors(it, reflectedTypes).convert()
+                ProtobufGeneratedMessageToDescriptors(
+                    primaryDescriptor = descriptor,
+                    reflectedFieldsList = reflectedTypes
+                ).convert()
             }
         }
     }
 }
+
+private fun Iterable<ReflectedField>.findId(number: Int): ReflectedField? =
+    find { it.id == number }
 
 private fun <K, V> MutableMap<K, V>.put(pair: Pair<K, V>) {
     put(pair.first, pair.second)
