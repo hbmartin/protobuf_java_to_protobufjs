@@ -8,6 +8,7 @@
 package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.GeneratedMessageV3
+import com.google.protobuf.MapField
 import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
 
@@ -16,13 +17,20 @@ internal object ClassToRootAndDescriptors {
         return when {
             clazz.isGeneratedMessageV3Subclass -> ProtobufGeneratedMessageToDescriptors(clazz)
             clazz.isMessageEnumSubclass -> ProtobufEnumToDescriptors(clazz)
+            clazz.isMapField -> {
+                println(clazz)
+                ProtobufMapFieldToDescriptors(clazz)
+            }
             else -> null
         }
     }
 }
 
+private val Class<*>.isMapField: Boolean
+    get() = MapField::class.java.isAssignableFrom(this)
+
 internal val Class<*>.isGeneratedMessageV3Subclass: Boolean
-    get() = superclass?.isAssignableFrom(GeneratedMessageV3::class.java) == true
+    get() = GeneratedMessageV3::class.java.isAssignableFrom(this)
 
 internal val Class<*>.isMessageEnumSubclass: Boolean
     get() = ProtocolMessageEnum::class.java.isAssignableFrom(this)
