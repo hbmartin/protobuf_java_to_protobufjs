@@ -12,11 +12,11 @@ import com.google.protobuf.Descriptors
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
+import me.haroldmartin.protobufjavatoprotobufjs.model.ProtobufConversionExceptions
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
 import me.haroldmartin.protobufjavatoprotobufjs.model.RootFullNameAndDescriptors
-import java.lang.RuntimeException
 
 internal class ProtobufGeneratedMessageToDescriptors(
     private val primaryDescriptor: Descriptors.Descriptor,
@@ -64,7 +64,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
                     return@map Field(
                         name = fieldDescriptor.name,
                         type = getTypeStringFromValueClass(reflected.type)
-                            ?: throw RuntimeException("Unknown map value class type"),
+                            ?: throw ProtobufConversionExceptions.UnknownMapValueType,
                         id = fieldDescriptor.number,
                         label = fieldDescriptor.label.jsString,
                         keyType = keyClass.getScalarType()
