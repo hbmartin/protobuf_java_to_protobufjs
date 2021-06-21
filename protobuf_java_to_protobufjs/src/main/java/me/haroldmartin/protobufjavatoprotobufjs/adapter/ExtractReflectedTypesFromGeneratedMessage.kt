@@ -12,6 +12,7 @@ import com.google.protobuf.MapField
 import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
+import java.lang.reflect.Field
 import java.lang.reflect.Modifier.isPrivate
 import java.lang.reflect.Modifier.isStatic
 import java.lang.reflect.ParameterizedType
@@ -39,19 +40,23 @@ internal object ExtractReflectedTypesFromGeneratedMessage {
         for (field in clazz.declaredFields) {
             if (isPrivate(field.modifiers) && field.name.endsWith("_")) {
                 if (field.type.isMapField) {
-                    val parameterizedType = field.genericType as ParameterizedType
-                    (parameterizedType.actualTypeArguments[1] as? Class<*>)?.let { valueClass ->
-                        fields[field.name.removeSuffix("_")] = ReflectedField(
-                            keyClass = parameterizedType.actualTypeArguments[0] as Class<*>,
-                            type = valueClass
-                        )
-                    }
+                    setFieldsFromMapType(field, fields)
                 } else {
                     fields[field.name.removeSuffix("_")] = ReflectedField(
                         type = field.type,
                     )
                 }
             }
+        }
+    }
+
+    private fun setFieldsFromMapType(field: Field, fields: MutableMap<String, ReflectedField>) {
+        val parameterizedType = field.genericType as ParameterizedType
+        (parameterizedType.actualTypeArguments[1] as? Class<*>)?.let { valueClass ->
+            fields[field.name.removeSuffix("_")] = ReflectedField(
+                keyClass = parameterizedType.actualTypeArguments[0] as Class<*>,
+                type = valueClass
+            )
         }
     }
 

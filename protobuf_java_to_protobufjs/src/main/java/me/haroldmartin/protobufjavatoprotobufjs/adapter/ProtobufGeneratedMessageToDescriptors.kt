@@ -61,7 +61,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
 
             reflectedFieldsList.findId(fieldDescriptor.number)?.let { reflected ->
                 reflected.keyClass?.let { keyClass ->
-                    return@map Field(
+                    Field(
                         name = fieldDescriptor.name,
                         type = getTypeStringFromValueClass(reflected.type)
                             ?: throw ProtobufConversionExceptions.UnknownMapValueType,
@@ -70,9 +70,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
                         keyType = keyClass.getScalarType()
                     )
                 }
-            }
-
-            Field(
+            } ?: Field(
                 name = fieldDescriptor.name,
                 type = getTypeStringAndQueueUnknown(fieldDescriptor),
                 id = fieldDescriptor.number,

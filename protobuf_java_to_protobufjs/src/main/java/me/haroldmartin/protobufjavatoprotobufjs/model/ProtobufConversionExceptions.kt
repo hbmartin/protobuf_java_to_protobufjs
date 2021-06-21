@@ -8,5 +8,5 @@
 package me.haroldmartin.protobufjavatoprotobufjs.model
 
 sealed class ProtobufConversionExceptions(message: String) : Exception(message) {
-    object UnknownMapValueType: ProtobufConversionExceptions("Unknown map value class type")
+    object UnknownMapValueType : ProtobufConversionExceptions("Unknown map value class type")
 }
