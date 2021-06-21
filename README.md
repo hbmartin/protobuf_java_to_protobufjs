@@ -1,7 +1,7 @@
 # Extract ProtobufJS Messages from Generated Java Classes
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.hbmartin/protobuf_java_to_protobufjs?color=6D3DEE)](https://repo.maven.apache.org/maven2/com/github/hbmartin/protobuf_java_to_protobufjs/)
-[![reviewdog badge](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml/badge.svg)](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/reviewdog.yml)
+[![Build](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/build.yml/badge.svg)](https://github.com/hbmartin/protobuf_java_to_protobufjs/actions/workflows/build.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/hbmartin/protobuf_java_to_protobufjs/badge)](https://www.codefactor.io/repository/github/hbmartin/protobuf_java_to_protobufjs)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=hbmartin_protobuf_java_to_protobufjs&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=hbmartin_protobuf_java_to_protobufjs)
 [![GitHub issues](https://img.shields.io/github/issues/hbmartin/protobuf_java_to_protobufjs)](https://github.com/hbmartin/protobuf_java_to_protobufjs/issues)
