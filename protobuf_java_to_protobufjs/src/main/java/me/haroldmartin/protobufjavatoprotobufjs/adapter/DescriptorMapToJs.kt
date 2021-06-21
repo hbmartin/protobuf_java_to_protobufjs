@@ -36,7 +36,7 @@ private fun MutableMap<String, Any>.putMessage(fullName: String, reflectedDescri
             if (reflectedDescriptor.fields.isNotEmpty() || reflectedDescriptor.enumValues.isEmpty()) {
                 messageMap["fields"] = mutableMapOf<String, Any>().also { fieldsMap ->
                     reflectedDescriptor.fields.forEach { field ->
-                        fieldsMap[field.name] = field.propertiesMap()
+                        fieldsMap[field.name] = field.toMap()
                     }
                 }
             }

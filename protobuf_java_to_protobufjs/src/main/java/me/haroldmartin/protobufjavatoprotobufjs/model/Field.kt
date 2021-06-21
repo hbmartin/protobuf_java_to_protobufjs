@@ -14,7 +14,7 @@ internal data class Field(
     val label: String,
     val keyType: String? = null
 ) {
-    fun propertiesMap(): Map<String, Any> {
+    fun toMap(): Map<String, Any> {
         return mutableMapOf<String, Any>().apply {
             put("type", type)
             put("id", id)

@@ -114,12 +114,18 @@ internal object ExtractReflectedTypesFromGeneratedMessage {
     }
 }
 
+private val Class<*>.isMapField: Boolean
+    get() = MapField::class.java.isAssignableFrom(this)
+
+private val camelRegex = "(?<=[a-zA-Z])[A-Z]".toRegex()
+
 private fun <K, V> MutableMap<K, V>.update(name: K, recipe: (V) -> V) {
     getOrElse(name, { null })?.let {
         put(name, recipe(it))
     }
 }
 
+@Suppress("UnusedPrivateMember")
 private inline fun <T, reified FILTER> Array<T>.filterClass(clazz: Class<FILTER>): List<FILTER> =
     map { it as? FILTER }.filterNotNull()
 
@@ -134,11 +140,6 @@ private fun java.lang.reflect.Field.getValue(): Int {
         getInt(null)
     }
 }
-
-private val Class<*>.isMapField: Boolean
-    get() = MapField::class.java.isAssignableFrom(this)
-
-private val camelRegex = "(?<=[a-zA-Z])[A-Z]".toRegex()
 
 private fun String.camelToSnakeCase(): String {
     return camelRegex.replace(this) {

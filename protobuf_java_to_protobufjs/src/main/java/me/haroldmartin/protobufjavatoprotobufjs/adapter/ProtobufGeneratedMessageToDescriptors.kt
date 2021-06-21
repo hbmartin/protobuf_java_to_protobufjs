@@ -61,15 +61,14 @@ internal class ProtobufGeneratedMessageToDescriptors(
 
             reflectedFieldsList.findId(fieldDescriptor.number)?.let { reflected ->
                 reflected.keyClass?.let { keyClass ->
-                    val field = Field(
+                    return@map Field(
                         name = fieldDescriptor.name,
-                        type = getTypeStringFromValueClass(reflected.type) ?: throw(RuntimeException("Unknown map value class type")),
+                        type = getTypeStringFromValueClass(reflected.type)
+                            ?: throw RuntimeException("Unknown map value class type"),
                         id = fieldDescriptor.number,
                         label = fieldDescriptor.label.jsString,
                         keyType = keyClass.getScalarType()
                     )
-                    println(field)
-                    return@map field
                 }
             }
 
@@ -85,31 +84,32 @@ internal class ProtobufGeneratedMessageToDescriptors(
     private fun getTypeStringAndQueueUnknown(
         fieldDescriptor: DescriptorProtos.FieldDescriptorProto
     ): String {
-        return when {
-            fieldDescriptor.hasTypeName() -> {
-                // TODO: handle repeated -> list<T>
-                reflectedFieldsList.findId(fieldDescriptor.number)?.let {
-                    queuedMessageClasses.add(it.type)
-                }
-                fieldDescriptor.typeName
+        return if (fieldDescriptor.hasTypeName()) {
+            // TODO: handle repeated -> list<T>
+            reflectedFieldsList.findId(fieldDescriptor.number)?.let {
+                queuedMessageClasses.add(it.type)
             }
-            // TODO: handle groups
-            else -> {
-                fieldDescriptor.type.jsString
-            }
+            fieldDescriptor.typeName
+        } else {
+            fieldDescriptor.type.jsString
         }
+        // TODO: handle groups
     }
 
     private fun getTypeStringFromValueClass(clazz: Class<*>): String? {
-        println("$clazz -> ${clazz.getScalarType()}")
         return if (clazz.isDescriptable) {
             queuedMessageClasses.add(clazz)
-            if (clazz.isMessageEnumSubclass) {
-                (clazz as? ProtocolMessageEnum)?.descriptorForType?.fullName
-            } else if (clazz.isGeneratedMessageV3Subclass) {
-                (clazz as? GeneratedMessageV3)?.descriptorForType?.fullName
-            } else {
-                null
+            // TODO fix for getting descriptor from Class<*>
+            when {
+                clazz.isMessageEnumSubclass -> {
+                    (clazz as? ProtocolMessageEnum)?.descriptorForType?.fullName
+                }
+                clazz.isGeneratedMessageV3Subclass -> {
+                    (clazz as? GeneratedMessageV3)?.descriptorForType?.fullName
+                }
+                else -> {
+                    null
+                }
             }
         } else {
             clazz.getScalarType()
@@ -118,7 +118,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
 
     companion object {
         operator fun invoke(clazz: Class<*>): RootFullNameAndDescriptors? {
-            return clazz.descriptors?.let { descriptor ->
+            return clazz.descriptor?.let { descriptor ->
                 val reflectedTypes = ExtractReflectedTypesFromGeneratedMessage(clazz)
                 ProtobufGeneratedMessageToDescriptors(
                     primaryDescriptor = descriptor,
@@ -147,7 +147,7 @@ private fun Class<*>.getScalarType(): String? =
         else -> null
     }
 
-private val Class<*>.descriptors: Descriptors.Descriptor?
+private val Class<*>.descriptor: Descriptors.Descriptor?
     get() = getMethod("getDescriptor").invoke(null) as? Descriptors.Descriptor
 
 private val DescriptorProtos.FieldDescriptorProto.Type.jsString: String
