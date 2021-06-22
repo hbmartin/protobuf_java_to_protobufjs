@@ -11,8 +11,8 @@ import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.ProtocolMessageEnum
+import me.haroldmartin.protobufjavatoprotobufjs.model.ConversionExceptions
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
-import me.haroldmartin.protobufjavatoprotobufjs.model.ProtobufConversionExceptions
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedField
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedFieldsList
@@ -64,7 +64,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
                     Field(
                         name = fieldDescriptor.name,
                         type = getTypeStringFromValueClass(reflected.type)
-                            ?: throw ProtobufConversionExceptions.UnknownMapValueType,
+                            ?: throw ConversionExceptions.UnknownMapValueType(reflected.type),
                         id = fieldDescriptor.number,
                         label = fieldDescriptor.label.jsString,
                         keyType = keyClass.getScalarType()
