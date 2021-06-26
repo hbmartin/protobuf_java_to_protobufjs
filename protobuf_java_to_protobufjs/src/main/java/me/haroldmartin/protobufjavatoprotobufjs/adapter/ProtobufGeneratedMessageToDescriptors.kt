@@ -97,18 +97,7 @@ internal class ProtobufGeneratedMessageToDescriptors(
     private fun getTypeStringFromValueClass(clazz: Class<*>): String? {
         return if (clazz.isDescriptable) {
             queuedMessageClasses.add(clazz)
-            // TODO fix for getting descriptor from Class<*>
-            when {
-                clazz.isMessageEnumSubclass -> {
-                    (clazz as? ProtocolMessageEnum)?.descriptorForType?.fullName
-                }
-                clazz.isGeneratedMessageV3Subclass -> {
-                    (clazz as? GeneratedMessageV3)?.descriptorForType?.fullName
-                }
-                else -> {
-                    null
-                }
-            }
+            clazz.descriptor?.fullName
         } else {
             clazz.getScalarType()
         }

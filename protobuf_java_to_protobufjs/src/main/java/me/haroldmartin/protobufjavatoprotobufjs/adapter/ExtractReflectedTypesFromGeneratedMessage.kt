@@ -24,8 +24,9 @@ internal object ExtractReflectedTypesFromGeneratedMessage {
         addFields(clazz, fields)
         addOneOfs(clazz, fields)
 
-        return fields.values
-            .filter { (!it.type.isPrimitive || it.keyClass != null) && it.id != null }
+        return fields.values.filter {
+            (!it.type.isPrimitive || it.keyClass != null) && it.id != null
+        }
     }
 
     private fun addFields(clazz: Class<*>, fields: MutableMap<String, ReflectedField>) {
