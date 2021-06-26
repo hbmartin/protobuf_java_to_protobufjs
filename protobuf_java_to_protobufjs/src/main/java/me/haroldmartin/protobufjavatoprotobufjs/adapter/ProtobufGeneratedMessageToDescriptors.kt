@@ -9,8 +9,6 @@ package me.haroldmartin.protobufjavatoprotobufjs.adapter
 
 import com.google.protobuf.DescriptorProtos
 import com.google.protobuf.Descriptors
-import com.google.protobuf.GeneratedMessageV3
-import com.google.protobuf.ProtocolMessageEnum
 import me.haroldmartin.protobufjavatoprotobufjs.model.ConversionExceptions
 import me.haroldmartin.protobufjavatoprotobufjs.model.Field
 import me.haroldmartin.protobufjavatoprotobufjs.model.ReflectedDescriptor
